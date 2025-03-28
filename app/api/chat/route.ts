@@ -1,11 +1,13 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
     const { messages, style } = await req.json();
     const lastMessage = messages[messages.length - 1]?.content || "";
+
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("Missing GEMINI_API_KEY environment variable");
+    }
 
     const systemMessage = `You are a social media expert that generates suggested replies to posts.
     The user will provide a post they want to reply to, and you should generate a reply in the style: "${style}".
@@ -14,27 +16,34 @@ export async function POST(req: Request) {
     Make the reply engaging, relevant to the post content, and authentic to the specified style.
     Do not mention that you are an AI or that you're responding in a specific style.`;
 
-    console.log("Processing request with style:", style);
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
-    // Initialize the Google Generative AI
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-    const result = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [
-            { text: `${systemMessage}\n\nPost to reply to: ${lastMessage}` },
-          ],
-        },
-      ],
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: `${systemMessage}\n\nPost to reply to: ${lastMessage}`,
+              },
+            ],
+          },
+        ],
+      }),
     });
 
-    const response = await result.response;
-    const text = response.text();
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.statusText}`);
+    }
 
-    return new Response(JSON.stringify({ reply: text }), {
+    const data = await response.json();
+    const reply = data.candidates[0].content.parts[0].text;
+
+    return new Response(JSON.stringify({ reply }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
