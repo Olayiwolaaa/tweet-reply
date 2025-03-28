@@ -23,14 +23,6 @@ export function Footer() {
               Twitter
             </a>
             <span className="text-muted-foreground/40">•</span>
-            <a
-              href="https://github.com/Olayiwolaaa/tweet-reply"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground hover:underline underline-offset-4"
-            >
-              GitHub
-            </a>
           </div>
 
           {/* Copyright */}
