@@ -16,6 +16,7 @@ import HistoryList from "@/components/history-list"
 import ThemeToggle from "@/components/theme-toggle"
 import LoadingIndicator from "@/components/loading-indicator"
 import { RefreshCw } from "lucide-react"
+import { PostHogProvider } from "./providers";
 
 // Maximum history items to keep
 const MAX_HISTORY_ITEMS = 10
@@ -149,6 +150,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background px-4 py-8">
+      <PostHogProvider>
       <main className="w-full max-w-xl">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-primary">Twitter Reply</h1>
@@ -255,6 +257,7 @@ export default function Home() {
 
         <Toaster />
       </main>
+      </PostHogProvider>
     </div>
   )
 }
