@@ -5,6 +5,8 @@ export function Footer() {
         <div className="flex flex-col items-center justify-center gap-6 text-center">
           {/* Social Links */}
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+            <span className="text-muted-foreground/40">•</span>
+
             <a
               href="https://www.tiktok.com/@yg_of_la"
               target="_blank"
