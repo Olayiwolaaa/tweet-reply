@@ -1,34 +1,44 @@
-import { Link } from "react-router-dom";
-import { FaTiktok, FaXTwitter, FaGithub } from "react-icons/fa6";
-
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border/40 py-6 md:py-8">
-      <div className="container flex flex-col md:flex-row items-center justify-between gap-4 px-4 md:px-6">
-        {/* Social Media Links */}
-        <nav className="flex items-center gap-4">
-          <Link
-            to="https://www.tiktok.com/@yg_of_la"
-            target="_blank"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <FaTiktok size={20} />
-          </Link>
-          <Link
-            to="https://x.com/yg_of_la"
-            target="_blank"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <FaXTwitter size={20} />
-          </Link>
-          <Link
-            to="https://github.com/Olayiwolaaa/tweet-reply"
-            target="_blank"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <FaGithub size={20} />
-          </Link>
-        </nav>
+    <footer className="w-full border-t border-border/40 py-8 md:py-10 bg-background/95 backdrop-blur-sm">
+      <div className="container px-4 md:px-6">
+        <div className="flex flex-col items-center justify-center gap-6 text-center">
+          {/* Social Links */}
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+            <a
+              href="https://www.tiktok.com/@yg_of_la"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground hover:underline underline-offset-4"
+            >
+              TikTok
+            </a>
+            <span className="text-muted-foreground/40">•</span>
+            <a
+              href="https://x.com/yg_of_la"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground hover:underline underline-offset-4"
+            >
+              Twitter
+            </a>
+            <span className="text-muted-foreground/40">•</span>
+            <a
+              href="https://github.com/Olayiwolaaa/tweet-reply"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground hover:underline underline-offset-4"
+            >
+              GitHub
+            </a>
+          </div>
+
+          {/* Copyright */}
+          <p className="text-xs text-muted-foreground/60">
+            © {new Date().getFullYear()} Tweet Reply Generator. All rights
+            reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );
