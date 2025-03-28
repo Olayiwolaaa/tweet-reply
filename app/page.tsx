@@ -95,69 +95,84 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to generate reply");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+
+      if (!data.reply) {
+        throw new Error("No reply in response");
+      }
+
       setCurrentResponse(data.reply);
 
-      // Add to history
+      // Add to history - fixed implementation
       const newEntry = { input, style, response: data.reply };
-      setHistory((prev) => [newEntry, ...prev.slice(0, MAX_HISTORY_ITEMS - 1)]);
+      setHistory((prev) => {
+        // Ensure we don't lose existing history
+        const updatedHistory = [newEntry, ...prev];
+        return updatedHistory.slice(0, MAX_HISTORY_ITEMS);
+      });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to generate reply",
         variant: "destructive",
       });
-      console.error(error);
+      console.error("Generation error:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRetry = async () => {
-    if (!input.trim() || !style.trim()) return;
+const handleRetry = async () => {
+  if (!input.trim() || !style.trim()) return;
 
-    setIsLoading(true);
-    setCurrentResponse("");
+  setIsLoading(true);
+  setCurrentResponse("");
 
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [{ role: "user", content: input }],
-          style,
-        }),
-      });
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messages: [{ role: "user", content: input }],
+        style,
+      }),
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to generate reply");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.reply) {
+      throw new Error("No reply in response");
+    }
+
+    setCurrentResponse(data.reply);
+
+    // Update history - fixed implementation
+    setHistory((prev) => {
+      if (prev.length > 0) {
+        return [{ ...prev[0], response: data.reply }, ...prev.slice(1)];
       }
-
-      const data = await response.json();
-      setCurrentResponse(data.reply);
-
-      // Update history
-      setHistory((prev) =>
-        prev.map((item, i) =>
-          i === 0 ? { ...item, response: data.reply } : item
-        )
-      );
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to regenerate reply",
-        variant: "destructive",
-      });
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      return [{ input, style, response: data.reply }];
+    });
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: "Failed to regenerate reply",
+      variant: "destructive",
+    });
+    console.error("Retry error:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const clearHistory = () => {
     setHistory([]);
