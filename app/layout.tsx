@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Twitter Reply - Style-Based Comment Generator",
+  title: "Tweet Reply - Style-Based Comment Generator",
   description: "Generate Twitter-style replies in any style using OpenAI",
     generator: 'v0.dev'
 }
